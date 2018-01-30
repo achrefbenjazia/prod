@@ -1,0 +1,84 @@
+
+SQL> create table modeles(
+  2  ref_modele varchar2(20) PRIMARY KEY,
+  3  modele varchar2(20),
+  4  marque varchar2(20),
+  5  puissance varchar2(20));
+
+Table crÚÚe.
+
+SQL> create table personnes(
+  2  cin number PRIMARY KEY,
+  3  nom varchar2(20),
+  4  prenom varchar2(20),
+  5  email varchar2(20),
+  6  num_tel number);
+
+Table crÚÚe.
+
+SQL> create table vehicule(
+  2  immatriculation varchar2(20) PRIMARY KEY,
+  3  date_mise_circulation date,
+  4  kilometrage number,
+  5  prix_demande number,
+  6  ref_modele varchar2(20) REFERENCES modeles(ref_modele));
+
+Table crÚÚe.
+
+
+
+SQL> create table acquisitions(
+  2  immatriculation varchar2(20),
+  3  cin number,
+  4  date_debut date,
+  5  date_fin date,
+  6  constraint fk_imm foreign key(immatriculation) references vehicule(immatriculation),
+  7  constraint fk_cin foreign key(cin) references personnes(cin),
+  8  constraint pk_ac primary key(immatriculation,cin));
+
+Table crÚÚe.
+
+SQL> create table contrat_vente(
+  2  ref_contrat varchar2(20),
+  3  date_vente date,
+  4  prix_vente number,
+  5  cin number,
+  6  immatriculation varchar2(20),
+  7  constraint pk_contrat primary key(ref_contrat,cin,immatriculation),
+  8  constraint fk_cont foreign key(cin,immatriculation) references acquisitions(cin,immatriculation));
+
+Table crÚÚe.
+
+SQL> alter table vehicule modify date_mise_circulation not null;
+
+Table modifiÚe.
+
+SQL> alter table vehicule modify kilometrage not null;
+
+Table modifiÚe.
+
+SQL> alter table vehicule modify prix_demande not null;
+
+Table modifiÚe.
+
+SQL> alter table contrat_vente modify prix_vente not null;
+
+Table modifiÚe.
+
+SQL> alter table personnes add constraint un_pers unique(email,num_tel);
+
+Table modifiÚe.
+
+
+SQL> alter table contrat_vente modify date_vente default sysdate;
+
+Table modifiÚe.
+
+
+SQL> alter table modeles add constraint ck_modele check(puissance in('4ch','5ch','6ch'));
+
+Table modifiÚe.
+
+SQL> alter table acquisitions add constraint ck_acq check(date_fin > date_debut);
+
+Table modifiÚe.
